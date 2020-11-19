@@ -40,7 +40,7 @@ class Application(tk.Tk):
 
         #Criacao da janela principal
         super().__init__()
-        self.geometry("800x600")
+        self.geometry("800x800")
         self.title("Estruturas de Dados")
          
         #Frames
