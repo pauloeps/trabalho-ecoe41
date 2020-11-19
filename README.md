@@ -25,6 +25,9 @@ O objetivo é criar uma demonstração das estruturas de dados estudadas utiliza
 - Árvore AVL (6 pontos)
 - Árvore RB (6 pontos)
 
+## Método de Trabalho Proposto
+Criaremos a implementação de cada estrutura em um frame, a ser adicionado em uma janela principal. Desta forma, no programa principal, através de um menu, é possível alternar entre os frames de cada estrutura e teremos uma janela que se modifica de forma dinâmica de acordo com a estrutura em que se vai trabalhar. Uma implementação exemplo de como isso tudo vai funcionar se encontra [aqui](exemplo-programa-principal/main.py).
+
 ## Deadline
 7 de Dezembro de 2020
 
