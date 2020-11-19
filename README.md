@@ -2,14 +2,14 @@
 Trabalho da disciplina Tópicos Especiais em Programação Teórica - ECOE41, do curso de Engenharia de Computação da Universidade Federal de Itajubá.
 
 ## Tutorial Git/GitHub
-Para quem gosta de ler: [Tutorial Breve em PDF (5 páginas)](docs-uteis/git-github.pdf)
-Para quem não gosta de ler: [Vídeo Legal (10 min)](https://youtu.be/FV-hMoqHtcU?t=74)
+* Para quem gosta de ler: [Tutorial Breve em PDF (5 páginas)](docs-uteis/git-github.pdf)
+* Para quem não gosta de ler: [Vídeo Legal (10 min)](https://youtu.be/FV-hMoqHtcU?t=74)
 
 ## Integrantes da Equipe:
-- Paulo Eduardo Paes Salomon
-- Gabriel Orlando Campista Petrucci
-- Jean Tan Li
-- Gabriel Ferreira Sousa Nilo
+* Paulo Eduardo Paes Salomon
+* Gabriel Orlando Campista Petrucci
+* Jean Tan Li
+* Gabriel Ferreira Sousa Nilo
 
 ## Descrição do Trabalho
 ([Descrição mais detalhada](docs-uteis/descricao-trabalho.pdf))
