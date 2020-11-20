@@ -8,8 +8,8 @@ class Draw_Rect:
         self.y = y
         self.canvas = canvas
         self.value = value   
-        self.rect_draw = self.canvas.create_rectangle(larg-l,alt-2*l+self.y,larg+l,alt+self.y,outline = "blue")
-        self.rect_text = self.canvas.create_text((larg,alt-l+self.y),text = value,font=("Courier", 18))
+        self.rect_draw = self.canvas.create_rectangle(larg-l,alt-2*l+self.y,larg+l,alt+self.y,outline = "blue",tag = 'elem')
+        self.rect_text = self.canvas.create_text((larg,alt-l+self.y),text = value,font=("Courier", 18),tag = 'elem')
     def delete_rect(self):
         self.canvas.delete(self.rect_draw,self.rect_text)
 
@@ -44,16 +44,19 @@ class Options(tk.LabelFrame):
         self.alt = self.canvas.winfo_reqheight() - 10
         self.value = tk.StringVar()
         self.option = tk.StringVar()
-        self.canvas.bind("<Button-1>",self.mouse_clicked)
+        self.canvas.info = self.canvas.create_text((16,self.alt/2),font = ("Courier",16),anchor = tk.W)
+        self.canvas.bind("<Button-1>",self.do_action)
         for i in range(3):
             self.radiob_list.append(tk.Radiobutton(self,text = self.opt[i],variable = self.option,value = self.opt[i]))
             self.radiob_list[i].grid(sticky = tk.W, row = i,column= 0,pady = 2)
         self.option.trace("w",self.paint)
         self.option.set(self.opt[0])
-        self.label = tk.Label(self,text = "Value")
-        self.opt_text = tk.Entry(self,width=4,relief="groove",textvariable=self.value)
-        self.label.grid(sticky = tk.W,row = 4,column =0)
-        self.opt_text.grid(sticky = tk.W,row = 4, column = 1,padx=10)
+        self.label = tk.Label(self,text = "Value(s)")
+        self.opt_text = tk.Entry(self,width=10,relief="groove",textvariable=self.value)
+        self.label.grid(sticky = tk.N,row = 4,column =0)
+        self.opt_text.grid(sticky = tk.N,row = 5, column = 0)
+        self.opt_text.bind("<Return>",self.do_action)
+        
     def show_top(self):
         if not self.stack.isEmpty():
             self.canvas.itemconfig(self.stack.peek().rect_draw, outline = "red")
@@ -62,27 +65,38 @@ class Options(tk.LabelFrame):
             self.canvas.itemconfig(self.stack.peek().rect_draw, outline = "blue")
     def paint(self,*args):
         if self.option.get() == "Pop":
+            self.canvas.itemconfig(self.canvas.info, text = "Remove Top\nSize:%d"%self.stack.size())
             self.show_top()
-        else:
+        elif self.option.get() == "New Stack":
+            self.canvas.itemconfig(self.canvas.info, text = "Stack created\nSize:%s"%self.stack.size())
             self.hide_top()
-    def mouse_clicked(self,event):
+        elif self.option.get() == "Push":
+            self.canvas.itemconfig(self.canvas.info, text = "Inserting items\nSize:%d"%self.stack.size())
+            self.hide_top()
+    def do_action(self,event):
         op = self.get_opt()
         print("Operação : ",op)
         if op == "New Stack":
             if messagebox.askokcancel("Create new stack","This will delete the actual stack"):
-                self.canvas.delete("all")
+                self.canvas.delete("elem")
                 self.stack = Stack()
+                self.paint()
                 self.y = 0
         elif op == "Push" :
             try:
-                if (self.alt-20+self.y) > 0:
-                    self.stack.push(Draw_Rect(self.canvas,self.y,self.get_value(),self.larg,self.alt))
-                    print("Tamanho da pilha : " ,self.stack.size())
-                    self.y-=2*l
-                else:
-                    print("No more space")
+                values = self.get_value()
+                print(values)
+                for actual_val in values:
+                    if (self.alt-20+self.y) > 0:
+                        self.stack.push(Draw_Rect(self.canvas,self.y,actual_val,self.larg,self.alt))
+                        print("Tamanho da pilha : " ,self.stack.size())
+                        self.paint()
+                        self.opt_text.delete(0,"end")
+                        self.y-=2*l
+                    else:
+                        print("No more space")
             except:
-                messagebox.showerror("ERROR","Value is invalid or stack does not exist")
+                messagebox.showerror("ERROR","Invalid input")
         elif op == "Pop":
             try:
                 print("Tamanho da pilha: ",self.stack.size())
@@ -91,11 +105,12 @@ class Options(tk.LabelFrame):
                 self.paint()
                 self.y+=2*l
             except:
-                messagebox.showerror("ERROR","Empty stack or stack does not exist")
+                messagebox.showerror("ERROR","Cannot remove from empty stack")
     def get_opt(self):
         return self.option.get()
     def get_value(self):
-        return int(self.opt_text.get())
+        aux = self.opt_text.get().split(",")
+        return [int(i) for i in aux]
         
             
 class FramePilha(tk.Frame):
@@ -109,7 +124,7 @@ class FramePilha(tk.Frame):
 class Pilha(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Pilha DEMO")
+        self.title("Stack")
         self.geometry("800x800")
         self.app = FramePilha()
         self.app.pack()
