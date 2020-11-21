@@ -18,26 +18,25 @@ class Draw_Rect:
         self.rect_text = self.canvas.create_text((larg,self.text_pos),text = value,font=("Courier", 18),tag = 'elem')
     def delete_rect(self):
         self.canvas.delete(self.rect_draw,self.rect_text)
-    def move_front(self):    #Move os demais itens da fila quando o primeiro é desenfileirado
-        self.canvas.move(self.rect_draw, 0 ,-40)
-        self.canvas.move(self.rect_text, 0, -40)
-    def appear(self,_start,_end,speed): #Animação de subida na fila
+    def appear(self,_start,speed): #Animação de subida na fila
         self.canvas.update()
         if (self.start >= _start): #_start e _end são as posições que já sabemos onde os blocos ficarão
             #self.canvas.update()
             self.start -= speed
-            self.end -= speed
+            #self.end -= speed
             self.text_pos -= speed
             self.canvas.move(self.rect_draw, 0 , -speed)
             self.canvas.move(self.rect_text, 0 , -speed)
-            self.canvas.after(10,self.appear, _start, _end, speed)
+            self.canvas.after(10,self.appear, _start, speed)
         elif (self.start < _start):
             speed = _start - self.start
             self.start += speed
-            self.end += speed
+            #self.end += speed
             self.text_pos += speed
             self.canvas.move(self.rect_draw, 0 , speed)
             self.canvas.move(self.rect_text, 0 , speed)
+        if self.start == -40:
+            self.delete_rect()
             
             
             
@@ -119,33 +118,33 @@ class Options(tk.LabelFrame):
                 self.paint()
                 self.y = 0
         elif op == "Enqueue" :
-            try:
+            #try:
                 if (self.y+40) < (self.alt):
                     self.lista += self.get_value()
                 self.create_box()
-            except:
-                messagebox.showerror("ERROR","Invalid input")
+            #except:
+             #   messagebox.showerror("ERROR","Invalid input")
         elif op == "Dequeue":
             try:
                 print("Tamanho da fila: ",self.queue.size())
                 pos = self.queue.dequeue()
-                pos.delete_rect()
+                pos.appear(-40, 3)
                 for each in range(self.queue.size()):
-                    self.queue.elem(each).move_front()
+                    self.queue.elem(each).appear(self.queue.elem(each).start - 2*l,3)
                 self.paint()
                 self.y-=2*l
             except:
                messagebox.showerror("ERROR","Cannot remove from empty queue")
+        self.opt_text.delete(0,"end")
     def create_box(self):
-        if (self.y+40) < (self.alt):
+        if (self.y+40) < (self.alt) and len(self.lista) > 0:
             yi_pos = 10+self.y
             yf_pos = 10+2*l+self.y
             rect = Draw_Rect(self.canvas,self.y,self.lista[0],self.larg,self.alt)
             self.queue.enqueue(rect)
-            rect.appear(yi_pos,yf_pos,10)
+            rect.appear(yi_pos,10)
             self.paint()
             print("Tamanho da fila : " ,self.queue.size())
-            self.opt_text.delete(0,"end")
             self.y+=2*l
             self.lista.pop(0)
             self.canvas.after(1000,self.create_box)
