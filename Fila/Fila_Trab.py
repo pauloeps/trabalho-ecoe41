@@ -142,7 +142,7 @@ class Options(tk.LabelFrame):
             yf_pos = 10+2*l+self.y
             rect = Draw_Rect(self.canvas,self.y,self.lista[0],self.larg,self.alt)
             self.queue.enqueue(rect)
-            rect.appear(yi_pos,yf_pos,1000)
+            rect.appear(yi_pos,yf_pos,10)
             self.paint()
             print("Tamanho da fila : " ,self.queue.size())
             self.opt_text.delete(0,"end")
