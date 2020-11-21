@@ -30,7 +30,7 @@ class Draw_Rect:
             self.text_pos -= speed
             self.canvas.move(self.rect_draw, 0 , -speed)
             self.canvas.move(self.rect_text, 0 , -speed)
-            self.canvas.after(0,self.appear(_start,_end,speed))
+            self.canvas.after(10,self.appear, _start, _end, speed)
         elif (self.start < _start):
             speed = _start - self.start
             self.start += speed
@@ -91,6 +91,7 @@ class Options(tk.LabelFrame):
         self.opt_text.grid(sticky = tk.N,row = 5, column = 0)
         self.example.grid(sticky = tk.N,row = 6, column = 0)
         self.opt_text.bind("<Return>",self.do_action)
+        self.lista = list()
         
     def show_front(self):   #Destaca qual elemento será retirado da pilha (função dequeue)
         if not self.queue.isEmpty():
@@ -118,24 +119,12 @@ class Options(tk.LabelFrame):
                 self.paint()
                 self.y = 0
         elif op == "Enqueue" :
-            #try:
-                values = self.get_value()
-                print(values)
-                for actual_val in values:
-                    if (self.y) < (self.alt):
-                        yi_pos = 10+self.y
-                        yf_pos = 10+2*l+self.y
-                        rect = Draw_Rect(self.canvas,self.y,actual_val,self.larg,self.alt)
-                        self.queue.enqueue(rect)
-                        self.paint()
-                        rect.appear(yi_pos,yf_pos,1)
-                        print("Tamanho da fila : " ,self.queue.size())
-                        self.opt_text.delete(0,"end")
-                        self.y+=2*l
-                    else:
-                        print("No more space")
-            #except:
-             #   messagebox.showerror("ERROR","Invalid input")
+            try:
+                if (self.y+40) < (self.alt):
+                    self.lista += self.get_value()
+                self.create_box()
+            except:
+                messagebox.showerror("ERROR","Invalid input")
         elif op == "Dequeue":
             try:
                 print("Tamanho da fila: ",self.queue.size())
@@ -147,6 +136,23 @@ class Options(tk.LabelFrame):
                 self.y-=2*l
             except:
                messagebox.showerror("ERROR","Cannot remove from empty queue")
+    def create_box(self):
+        if (self.y+40) < (self.alt):
+            yi_pos = 10+self.y
+            yf_pos = 10+2*l+self.y
+            rect = Draw_Rect(self.canvas,self.y,self.lista[0],self.larg,self.alt)
+            self.queue.enqueue(rect)
+            rect.appear(yi_pos,yf_pos,1000)
+            self.paint()
+            print("Tamanho da fila : " ,self.queue.size())
+            self.opt_text.delete(0,"end")
+            self.y+=2*l
+            self.lista.pop(0)
+            self.canvas.after(1000,self.create_box)
+        else:
+            print("No more space")
+        
+        
     def get_opt(self):
         return self.option.get()
     def get_value(self):
