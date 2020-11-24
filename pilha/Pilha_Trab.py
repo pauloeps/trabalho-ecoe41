@@ -7,11 +7,39 @@ class Draw_Rect:
     def __init__(self,canvas,y,value,larg,alt):
         self.y = y
         self.canvas = canvas
+        self.start = -40
+        self.end = 0
+        self.text_pos = (self.start + self.end)/2
         self.value = value   
-        self.rect_draw = self.canvas.create_rectangle(larg-l,alt-2*l+self.y,larg+l,alt+self.y,outline = "blue",tag = 'elem')
-        self.rect_text = self.canvas.create_text((larg,alt-l+self.y),text = value,font=("Courier", 18),tag = 'elem')
+        self.rect_draw = self.canvas.create_rectangle(larg-l,self.start,larg+l,self.end,outline = "blue",tag = 'elem')
+        self.rect_text = self.canvas.create_text((larg,self.text_pos),text = value,font=("Courier", 18),tag = 'elem')
     def delete_rect(self):
         self.canvas.delete(self.rect_draw,self.rect_text)
+    def appear(self,_start,speed,isPop = False): #Animação de subida na Pilha
+        self.canvas.update()
+        if (self.start <= _start): #_start e _end são as posições que já sabemos onde os blocos ficarão
+            #self.canvas.update()
+            print('oi')
+            self.start += speed
+            #self.end -= speed
+            self.text_pos += speed
+            self.canvas.move(self.rect_draw, 0 , speed)
+            self.canvas.move(self.rect_text, 0 , speed)
+            self.canvas.after(10,self.appear, _start, speed,isPop)
+        elif (self.start > _start) and not isPop: #caso ocorra de passar a posição definida
+            speed = self.start - _start
+            self.start -= speed
+            #self.end += speed
+            self.text_pos -= speed
+            self.canvas.move(self.rect_draw, 0 , speed)
+            self.canvas.move(self.rect_text, 0 , speed)
+        elif isPop: #Caso esteja na opção 'pop'/ esta opção é apenas para nao conflitar com o segundo 'elif' desta func
+            self.start -= speed
+            self.canvas.move(self.rect_draw, 0 , -speed)
+            self.canvas.move(self.rect_text, 0 , -speed)
+            self.canvas.after(10,self.appear, _start, speed, isPop)
+        if self.start == -40:
+            self.delete_rect()
 
 class Stack:
      def __init__(self):
@@ -31,6 +59,9 @@ class Stack:
 
      def size(self):
          return len(self.items)
+        
+     def elem(self,pos):
+         return self.items[pos]
 
 class Options(tk.LabelFrame):
     def __init__(self,master,canvas):
@@ -56,7 +87,7 @@ class Options(tk.LabelFrame):
         self.label.grid(sticky = tk.N,row = 4,column =0)
         self.opt_text.grid(sticky = tk.N,row = 5, column = 0)
         self.opt_text.bind("<Return>",self.do_action)
-        
+        self.lista = list()
     def show_top(self):
         if not self.stack.isEmpty():
             self.canvas.itemconfig(self.stack.peek().rect_draw, outline = "red")
@@ -84,33 +115,40 @@ class Options(tk.LabelFrame):
                 self.y = 0
         elif op == "Push" :
             try:
-                values = self.get_value()
-                print(values)
-                for actual_val in values:
-                    if (self.alt-20+self.y) > 0:
-                        self.stack.push(Draw_Rect(self.canvas,self.y,actual_val,self.larg,self.alt))
-                        print("Tamanho da pilha : " ,self.stack.size())
-                        self.paint()
-                        self.opt_text.delete(0,"end")
-                        self.y-=2*l
-                    else:
-                        print("No more space")
+                if (self.y+40) < (self.alt):
+                    self.lista += self.get_value()
+                self.create_box()
             except:
                 messagebox.showerror("ERROR","Invalid input")
         elif op == "Pop":
             try:
                 print("Tamanho da pilha: ",self.stack.size())
                 pos = self.stack.pop()
-                pos.delete_rect()
+                pos.appear(-40,3,True)
                 self.paint()
                 self.y+=2*l
             except:
                 messagebox.showerror("ERROR","Cannot remove from empty stack")
+        self.opt_text.delete(0,"end")
     def get_opt(self):
         return self.option.get()
     def get_value(self):
         aux = self.opt_text.get().split(",")
         return [int(i) for i in aux]
+    def create_box(self):
+        if (self.y+40) < (self.alt) and len(self.lista) > 0:
+            yi_pos = self.alt-10-2*l+self.y
+            #yf_pos = 10+2*l+self.y
+            rect = Draw_Rect(self.canvas,self.y,self.lista[0],self.larg,self.alt)
+            self.stack.push(rect)
+            rect.appear(yi_pos,10)
+            self.paint()
+            print("Tamanho da pilha : " ,self.stack.size())
+            self.y-=2*l
+            self.lista.pop(0)
+            self.canvas.after(1000,self.create_box)
+        else:
+            print("No more space")
         
             
 class FramePilha(tk.Frame):
