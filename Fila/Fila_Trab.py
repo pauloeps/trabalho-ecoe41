@@ -35,7 +35,7 @@ class Draw_Rect:
             self.text_pos += speed
             self.canvas.move(self.rect_draw, 0 , speed)
             self.canvas.move(self.rect_text, 0 , speed)
-        if self.start <= -40:
+        if self.start == -40:
             self.delete_rect()
             
             

@@ -36,7 +36,6 @@ class Draw_Rect:
             self.canvas.move(self.rect_text, 0 , speed)
         if self.start <= 30 and isPop:
             self.delete_rect()
-            print('oi')
             self.canvas.after_cancel(temp)
             
 
