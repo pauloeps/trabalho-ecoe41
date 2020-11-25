@@ -17,29 +17,28 @@ class Draw_Rect:
         self.canvas.delete(self.rect_draw,self.rect_text)
     def appear(self,_start,speed,isPop = False): #Animação de subida na Pilha
         self.canvas.update()
-        if (self.start <= _start): #_start e _end são as posições que já sabemos onde os blocos ficarão
-            #self.canvas.update()
-            print('oi')
-            self.start += speed
-            #self.end -= speed
-            self.text_pos += speed
-            self.canvas.move(self.rect_draw, 0 , speed)
-            self.canvas.move(self.rect_text, 0 , speed)
-            self.canvas.after(10,self.appear, _start, speed,isPop)
-        elif (self.start > _start) and not isPop: #caso ocorra de passar a posição definida
+        if (self.start <= _start) or isPop: #_start e _end são as posições que já sabemos onde os blocos ficarão
+            if not isPop:
+                aux = 1
+            else:
+                aux = -1
+            self.start = self.start + (aux)*speed
+            self.text_pos = self.text_pos + (aux)*speed
+            self.canvas.move(self.rect_draw, 0 , (aux*speed))
+            self.canvas.move(self.rect_text, 0 , (aux*speed))
+            temp = self.canvas.after(10,self.appear, _start, speed,isPop)
+        elif (self.start > _start): #caso ocorra de passar a posição definida
             speed = self.start - _start
             self.start -= speed
             #self.end += speed
             self.text_pos -= speed
             self.canvas.move(self.rect_draw, 0 , speed)
             self.canvas.move(self.rect_text, 0 , speed)
-        elif isPop: #Caso esteja na opção 'pop'/ esta opção é apenas para nao conflitar com o segundo 'elif' desta func
-            self.start -= speed
-            self.canvas.move(self.rect_draw, 0 , -speed)
-            self.canvas.move(self.rect_text, 0 , -speed)
-            self.canvas.after(10,self.appear, _start, speed, isPop)
-        if self.start == -40:
+        if self.start <= 30 and isPop:
             self.delete_rect()
+            print('oi')
+            self.canvas.after_cancel(temp)
+            
 
 class Stack:
      def __init__(self):
@@ -124,7 +123,7 @@ class Options(tk.LabelFrame):
             try:
                 print("Tamanho da pilha: ",self.stack.size())
                 pos = self.stack.pop()
-                pos.appear(-40,3,True)
+                pos.appear(-40,10,True)
                 self.paint()
                 self.y+=2*l
             except:
