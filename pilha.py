@@ -147,26 +147,24 @@ class Options(tk.LabelFrame):
             self.canvas.after(1000,self.create_box)
         else:
             print("No more space")
-        
-            
+              
 class FramePilha(tk.Frame):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, master):
+        super().__init__(master)
         self.tela = tk.Canvas(self,bg = "white", width = 600, height = 700)
         self.opt = Options(self,self.tela)
         self.tela.update()
         self.tela.grid(sticky = tk.W,row=0,column=1)
         self.opt.grid(sticky=tk.W,row = 0,column = 0)
+"""
 class Pilha(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Stack")
         self.geometry("800x800")
-        self.app = FramePilha()
-        self.app.pack()
+        self.frmPilha = FramePilha(self)
+        self.frmPilha.pack()
             
-            
-
 pilha=Pilha()
 pilha.mainloop()
-        
+"""        
