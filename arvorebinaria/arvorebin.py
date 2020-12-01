@@ -2,13 +2,14 @@ import tkinter as tk
 import math as m
 from tkinter import messagebox
 class No:
-    def __init__(self,val,circ,text,x,y):
+    def __init__(self,val,circ,text,x,y,linha=None,colocado):
         self.valor = val
         self.circulo = circ
         self.texto = text
         self.direita = None
         self.esquerda = None
         self.linha = linha
+        self.esqDir = colocado
         self.posicoes(x,y)
     def __str__(self):
         return "{0}".format(self.valor)
@@ -20,7 +21,19 @@ class No:
         self.x2 = self.x + aux
         self.y2 = self.y - aux
         self.x3 = self.x - aux
-
+class Linha:
+    def __init__(self,canvas,noStart,noEnd,esqDir):
+        self.canvas = canvas
+        self.noInicio = noStart
+        self.noFim = noEnd
+        self.direct = esqDir
+        if(esqDir == "esquerda"):
+            self.linha = canvas.create_line(self.noInicio.x3,self.noInicio.y2,self.noFim.x,self.noFim.y1,fill="black")
+        else:
+            self.linha = canvas.create_line(self.noInicio.x2,self.noInicio.y2,self.noFim.x,self.noFim.y1,fill="black")
+    def atualiza(self):
+        if self
+        
 class ArvoreBin:
     def __init__(self):
         self.root = None
@@ -48,9 +61,9 @@ class ArvoreBin:
         if noAux is None:
             return
         if noAux.circulo is aux or noAux.texto is aux:
-            self.find = noAux
-        self.findNo(noAux.esquerda,aux)
-        self.findNo(noAux.direita,aux)
+            return noAux
+        return self.findNo(noAux.esquerda,aux)
+        return self.findNo(noAux.direita,aux)
 
 class Menu(tk.LabelFrame):
     def __init__(self,master):
@@ -95,8 +108,7 @@ class CanvasTree(tk.Canvas):
             if(self.selecionado is None):
                 item = self.find_withtag(tk.CURRENT)
                 if(item):
-                    self.arvore.findNo(self.arvore.root,item[0])
-                    no = self.arvore.find
+                    no = self.arvore.findNo(self.arvore.root,item[0])
                     if(no):
                         self.selecionado = no
                         self.itemconfig(no.circulo, outline = "red")
@@ -115,8 +127,7 @@ class CanvasTree(tk.Canvas):
                         valor = int(valor)
                         if(not item):
                             self.menu.entrada.delete(0,"end")
-                            self.arvore.findNo(self.arvore.root,self.selecionado.circulo)
-                            findNoSel = self.arvore.find
+                            findNoSel = self.arvore.findNo(self.arvore.root,self.selecionado.circulo)
                             if(x > findNoSel.x):
                                 if(findNoSel.direita is None):
                                     circ = self.create_oval(x-10,y-10,x+10,y+10,width = 2,fill="white")
