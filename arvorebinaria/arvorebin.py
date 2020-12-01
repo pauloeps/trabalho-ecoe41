@@ -98,6 +98,7 @@ class CanvasTree(tk.Canvas):
         self.arvore = tree
         self.selecionado = None
         self.bind("<Button-1>",self.draw_No)
+        self.bind("<Button-3>",self.removeNo)
     def draw_No(self,event):
         x,y = event.x,event.y
         valor = self.menu.entrada.get()
@@ -116,7 +117,6 @@ class CanvasTree(tk.Canvas):
                 item = self.find_withtag(tk.CURRENT)
                 if(item):
                     no = self.arvore.findNo(self.arvore.root,item[0])
-                    print(no)
                     if(no):
                         self.selecionado = no
                         self.itemconfig(no.circulo, outline = "red")
@@ -129,7 +129,7 @@ class CanvasTree(tk.Canvas):
                         self.coords(self.selecionado.texto,x,y)
                         self.selecionado.posicoes(x,y)
                     else:
-                        messagebox.showerror("ERROR","Is already exist a node here!")
+                        messagebox.showerror("ERROR","Can't draw over a node!")
                 else:
                     try:
                         valor = int(valor)
@@ -161,7 +161,27 @@ class CanvasTree(tk.Canvas):
                     except:
                         messagebox.showerror("ERROR","Invalid input")
                 self.selecionado = None
-                
+
+    def removeNo(self,event):
+        x,y = event.x,event.y
+        item = self.find_withtag(tk.CURRENT)
+        if(item):
+            no = self.arvore.findNo(self.arvore.root,item[0])
+            if no.direita is None and no.esquerda is None:
+                if no is self.arvore.root:
+                    self.delete(no.circulo,no.texto)
+                    self.arvore.root = None
+                else:
+                    preNo = no.linha.noInicio
+                    self.delete(no.circulo,no.texto,no.linha.linha)
+                    if(preNo.direita is no):
+                        preNo.direita = None
+                    else:
+                        preNo.esquerda = None
+            elif no.direita is None or no.esquerda is None:
+                if no is self.arvore.root:
+                    print()
+        
 class FrameTree(tk.Frame):
     def __init__(self,master):
         super().__init__(master)
