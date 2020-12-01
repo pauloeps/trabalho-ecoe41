@@ -2,13 +2,13 @@ import tkinter as tk
 import math as m
 from tkinter import messagebox
 class No:
-    def __init__(self,val,circ,text,x,y,linha=None,colocado):
+    def __init__(self,val,circ,text,x,y,colocado=None):
         self.valor = val
         self.circulo = circ
         self.texto = text
         self.direita = None
         self.esquerda = None
-        self.linha = linha
+        self.linha = None
         self.esqDir = colocado
         self.posicoes(x,y)
     def __str__(self):
@@ -17,9 +17,9 @@ class No:
         aux = m.sin(m.radians(45))*10
         self.x = x
         self.y = y
-        self.y1 = self.y+10
+        self.y1 = self.y-10
         self.x2 = self.x + aux
-        self.y2 = self.y - aux
+        self.y2 = self.y + aux
         self.x3 = self.x - aux
 class Linha:
     def __init__(self,canvas,noStart,noEnd,esqDir):
@@ -31,8 +31,14 @@ class Linha:
             self.linha = canvas.create_line(self.noInicio.x3,self.noInicio.y2,self.noFim.x,self.noFim.y1,fill="black")
         else:
             self.linha = canvas.create_line(self.noInicio.x2,self.noInicio.y2,self.noFim.x,self.noFim.y1,fill="black")
+        self.atualiza()
     def atualiza(self):
-        if self
+        if self.linha:
+            if(self.direct == "esquerda"):
+                self.canvas.coords(self.linha,self.noInicio.x3,self.noInicio.y2,self.noFim.x,self.noFim.y1)
+            else:
+                self.canvas.coords(self.linha,self.noInicio.x2,self.noInicio.y2,self.noFim.x,self.noFim.y1)
+            self.canvas.after(10,self.atualiza)
         
 class ArvoreBin:
     def __init__(self):
@@ -61,16 +67,17 @@ class ArvoreBin:
         if noAux is None:
             return
         if noAux.circulo is aux or noAux.texto is aux:
-            return noAux
-        return self.findNo(noAux.esquerda,aux)
-        return self.findNo(noAux.direita,aux)
+            self.find = noAux
+        self.findNo(noAux.esquerda,aux)
+        self.findNo(noAux.direita,aux)
+        return self.find
 
 class Menu(tk.LabelFrame):
     def __init__(self,master):
         super().__init__(master,text = "Binary Tree Manger")
         self.lf = tk.LabelFrame(self,text = "Infos")
         self.info = tk.Label(self.lf, text = "Left Button Mouse = Select Node\Insert Node\nRight Button Mouse = Remove Node\nIf Node Selected you can move with arrows")
-        self.valno = tk.LabelFrame(self,text = "Value Node")
+        self.valno = tk.LabelFrame(self,text = "Node Value")
         self.caminhamento = tk.LabelFrame(self,text = "Walk")
         self.entrada = tk.Entry(self.valno,width = 10,relief = "groove",justify = tk.RIGHT)
         self.emOrdem = tk.Button(self.caminhamento,text = "In Order")
@@ -109,6 +116,7 @@ class CanvasTree(tk.Canvas):
                 item = self.find_withtag(tk.CURRENT)
                 if(item):
                     no = self.arvore.findNo(self.arvore.root,item[0])
+                    print(no)
                     if(no):
                         self.selecionado = no
                         self.itemconfig(no.circulo, outline = "red")
@@ -132,16 +140,22 @@ class CanvasTree(tk.Canvas):
                                 if(findNoSel.direita is None):
                                     circ = self.create_oval(x-10,y-10,x+10,y+10,width = 2,fill="white")
                                     text = self.create_text(x,y,text = valor)
-                                    no = No(valor,circ,text,x,y)
+                                    no = No(valor,circ,text,x,y,"direita")
+                                    linha = Linha(self,findNoSel,no,"direita")
+                                    no.linha = linha
                                     findNoSel.direita = no
+                                    self.arvore.emOrdem(self.arvore.root)
                                 else:
                                     messagebox.showerror("ERROR","Right node already exist!")
                             else:
                                 if(findNoSel.esquerda is None):
                                     circ = self.create_oval(x-10,y-10,x+10,y+10,width = 2,fill="white")
                                     text = self.create_text(x,y,text = valor)
-                                    no = No(valor,circ,text,x,y)
+                                    no = No(valor,circ,text,x,y,"esquerda")
+                                    linha = Linha(self,findNoSel,no,"esquerda")
+                                    no.linha = linha
                                     findNoSel.esquerda = no
+                                    self.arvore.emOrdem(self.arvore.root)
                                 else:
                                     messagebox.showerror("ERROR","Left node already exist!")
                     except:
