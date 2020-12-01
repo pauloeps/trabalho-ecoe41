@@ -1,4 +1,5 @@
 import tkinter as tk
+import math as m
 from tkinter import messagebox
 class No:
     def __init__(self,val,circ,text,x,y):
@@ -7,10 +8,18 @@ class No:
         self.texto = text
         self.direita = None
         self.esquerda = None
-        self.x = x
-        self.y = y
+        self.linha = linha
+        self.posicoes(x,y)
     def __str__(self):
         return "{0}".format(self.valor)
+    def posicoes(self,x,y):
+        aux = m.sin(m.radians(45))*10
+        self.x = x
+        self.y = y
+        self.y1 = self.y+10
+        self.x2 = self.x + aux
+        self.y2 = self.y - aux
+        self.x3 = self.x - aux
 
 class ArvoreBin:
     def __init__(self):
@@ -39,8 +48,7 @@ class ArvoreBin:
         if noAux is None:
             return
         if noAux.circulo is aux or noAux.texto is aux:
-            print("noAUX",noAux)
-            return noAux
+            self.find = noAux
         self.findNo(noAux.esquerda,aux)
         self.findNo(noAux.direita,aux)
 
@@ -87,31 +95,34 @@ class CanvasTree(tk.Canvas):
             if(self.selecionado is None):
                 item = self.find_withtag(tk.CURRENT)
                 if(item):
-                    no = self.arvore.findNo(self.arvore.root,item[0])
-                    print(no)
+                    self.arvore.findNo(self.arvore.root,item[0])
+                    no = self.arvore.find
                     if(no):
                         self.selecionado = no
                         self.itemconfig(no.circulo, outline = "red")
             else:
                 self.itemconfig(self.selecionado.circulo, outline = "black")
+                item = self.find_withtag(tk.CURRENT)
                 if (valor==""):
-                    self.coords(self.selecionado.circulo,x-10,y-10,x+10,y+10)
-                    self.coords(self.selecionado.texto,x,y)
+                    if not item or item[0] is self.selecionado.circulo or item[0] is self.selecionado.texto:
+                        self.coords(self.selecionado.circulo,x-10,y-10,x+10,y+10)
+                        self.coords(self.selecionado.texto,x,y)
+                        self.selecionado.posicoes(x,y)
+                    else:
+                        messagebox.showerror("ERROR","Is already exist a node here!")
                 else:
                     try:
                         valor = int(valor)
-                        item = self.find_withtag(tk.CURRENT)
                         if(not item):
                             self.menu.entrada.delete(0,"end")
-                            findNoSel = self.arvore.findNo(self.arvore.root,self.selecionado.circulo)
-                            print (findNoSel)
+                            self.arvore.findNo(self.arvore.root,self.selecionado.circulo)
+                            findNoSel = self.arvore.find
                             if(x > findNoSel.x):
                                 if(findNoSel.direita is None):
                                     circ = self.create_oval(x-10,y-10,x+10,y+10,width = 2,fill="white")
                                     text = self.create_text(x,y,text = valor)
                                     no = No(valor,circ,text,x,y)
                                     findNoSel.direita = no
-                                    self.arvore.emOrdem(self.arvore.root)
                                 else:
                                     messagebox.showerror("ERROR","Right node already exist!")
                             else:
@@ -120,7 +131,6 @@ class CanvasTree(tk.Canvas):
                                     text = self.create_text(x,y,text = valor)
                                     no = No(valor,circ,text,x,y)
                                     findNoSel.esquerda = no
-                                    self.arvore.emOrdem(self.arvore.root)
                                 else:
                                     messagebox.showerror("ERROR","Left node already exist!")
                     except:
@@ -138,7 +148,7 @@ class FrameTree(tk.Frame):
 class Tela(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Stack")
+        self.title("BinaryTree")
         self.geometry("800x800")
         self.frmPilha = FrameTree(self)
         self.frmPilha.pack()
