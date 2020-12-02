@@ -49,6 +49,7 @@ class ArvoreBin:
     def emOrdem(self,noAux,canvas,resetTime):
         if resetTime:
             self.time = 0
+            print()
             print("Walk In Order!")
         canvas.update()
         if noAux is None:
@@ -56,27 +57,29 @@ class ArvoreBin:
         self.emOrdem(noAux.esquerda,canvas,False)
         print (noAux.valor, end = " ")
         canvas.after(self.time,self.mudaCor,canvas,noAux,True)
-        canvas.after(self.time+2000,self.mudaCor,canvas,noAux,False)
-        self.time += 2000
+        canvas.after(self.time+1500,self.mudaCor,canvas,noAux,False)
+        self.time += 1500
         self.emOrdem(noAux.direita,canvas,False)
         
     def preOrdem(self,noAux,canvas,resetTime):
         if resetTime:
             self.time = 0
+            print()
             print("Walk Pre Order!")
         canvas.update()
         if noAux is None:
             return
         print (noAux.valor,end = " ")
         canvas.after(self.time,self.mudaCor,canvas,noAux,True)
-        canvas.after(self.time+2000,self.mudaCor,canvas,noAux,False)
-        self.time += 2000
+        canvas.after(self.time+1500,self.mudaCor,canvas,noAux,False)
+        self.time += 1500
         self.preOrdem(noAux.esquerda,canvas,False)
         self.preOrdem(noAux.direita,canvas,False)
         
     def posOrdem(self,noAux,canvas,resetTime):
         if resetTime:
             self.time = 0
+            print()
             print("Walk Pos Order!")
         canvas.update()
         if noAux is None:
@@ -85,8 +88,8 @@ class ArvoreBin:
         self.posOrdem(noAux.direita,canvas,False)
         print (noAux.valor, end = " ")
         canvas.after(self.time,self.mudaCor,canvas,noAux,True)
-        canvas.after(self.time+2000,self.mudaCor,canvas,noAux,False)
-        self.time += 2000
+        canvas.after(self.time+1500,self.mudaCor,canvas,noAux,False)
+        self.time += 1500
     def findNo(self,noAux,aux):
         if noAux is None:
             return
