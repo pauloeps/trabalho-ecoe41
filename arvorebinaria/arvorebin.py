@@ -107,8 +107,15 @@ class ArvoreBin:
 class Menu(tk.LabelFrame):
     def __init__(self,master):
         super().__init__(master,text = "Binary Tree Manger")
-        self.lf = tk.LabelFrame(self,text = "Infos")
-        self.info = tk.Label(self.lf, text = "Left Button Mouse = Select Node\Insert Node\nRight Button Mouse = Remove Node\nIf Node Selected you can move with arrows")
+        self.lf = tk.LabelFrame(self,text = "Info")
+        self.infoText = """ Left Button Mouse = Select Node\Insert Node
+                            To insert a child, first click on the Node that
+                            is going to be the root, then click to insert
+                            the child.
+                            Right Button Mouse = Remove Node
+                            If Node Selected you can move with arrows. """
+        #self.info = tk.Label(self.lf, text = self.infoText)
+        self.helpBtn = tk.Button(self.lf,text = "Help")
         self.valno = tk.LabelFrame(self,text = "Node Value")
         self.caminhamento = tk.LabelFrame(self,text = "Walk")
         self.entrada = tk.Entry(self.valno,width = 10,relief = "groove",justify = tk.RIGHT)
@@ -122,7 +129,32 @@ class Menu(tk.LabelFrame):
         self.emOrdem.pack(fill=tk.BOTH)
         self.preOrdem.pack(fill=tk.BOTH)
         self.posOrdem.pack(fill=tk.BOTH)
-        self.info.pack()
+        self.helpBtn.pack()
+        #self.info.pack()
+
+class HelpWindow(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Help")
+        #self.geometry("400x600")
+        self.bullets = [
+        '\u2022 Left Button Mouse = Select Node\Insert Node',
+        '\u2022 To insert a child, first click on the Node that is going to be the root, then click to insert the child.',
+        '\u2022 Right Button Mouse = Remove Node',
+        '\u2022 If Node Selected you can move with arrows.']
+        self.txt = tk.Text(self, 
+                           height = 12,
+                           width = 40,
+                           wrap='word',
+                           font=("Times New Roman", 12))
+        
+        for bullet in self.bullets:
+            self.txt.insert('end', bullet)
+            self.txt.insert('end', '\n\n')
+        self.txt.config(state='disabled')
+        self.txt.pack()
+
+
 class CanvasTree(tk.Canvas):
     def __init__(self,master,tree,menu):
         super().__init__(master, bg = "white", width = 600, height = 700)
@@ -131,7 +163,13 @@ class CanvasTree(tk.Canvas):
         self.selecionado = None
         self.bind("<Button-1>",self.draw_No)
         self.bind("<Button-3>",self.removeNo)
+        self.menu.helpBtn.configure(command = self.helpCmd)
         self.update()
+
+    def helpCmd(self):
+        hlpW = HelpWindow()
+        hlpW.mainloop()
+
     def draw_No(self,event):
         x,y = event.x,event.y
         valor = self.menu.entrada.get()
