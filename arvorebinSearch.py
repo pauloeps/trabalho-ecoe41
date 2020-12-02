@@ -122,7 +122,12 @@ class ArvoreBin:
         self.root = self.insert(self.root,valorIn,x,y,canvas,True)
     def deletar(self,noAux,no,canvas):
         if no.valor < noAux.valor:
-            noAux.left = self._del()
+            noAux.esquerda = self.deletar(noAux.esquerda,no,canvas)
+        elif no.valor > noAux.valor:
+            noAux.direita = self.deletar(noAux.direita,no,canvas)
+        else:
+            if noAux.esquerda is None:
+                canvas.delete()
     def mudaCor(self,canvas,no,vF):
         if vF:
             canvas.itemconfig(no.circulo,outline="blue")
