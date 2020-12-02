@@ -1,5 +1,6 @@
 import tkinter as tk
 import math as m
+from functools import partial
 from tkinter import messagebox
 class No:
     def __init__(self,val,circ,text,x,y,colocado=None):
@@ -21,6 +22,7 @@ class No:
         self.x2 = self.x + aux
         self.y2 = self.y + aux
         self.x3 = self.x - aux
+        
 class Linha:
     def __init__(self,canvas,noStart,noEnd,esqDir):
         self.canvas = canvas
@@ -43,12 +45,16 @@ class Linha:
 class ArvoreBin:
     def __init__(self):
         self.root = None
-    def emOrdem(self,noAux):
+    def emOrdem(self,noAux,canvas):
+        print("Cheguei")
         if noAux is None:
             return
-        self.emOrdem(noAux.esquerda)
+        if noAux.esquerda is None:
+            self.mudaCor(canvas,noAux,True)
+            canvas.after(2000,self.mudaCor,canvas,noAux,False)
+        canvas.after(2000,self.emOrdem,noAux.esquerda,canvas)
         print (noAux.valor, end = " ")
-        self.emOrdem(noAux.direita)
+        canvas.after(4000,self.emOrdem,noAux.direita,canvas)
         
     def preOrdem(self,noAux):
         if noAux is None:
@@ -71,6 +77,11 @@ class ArvoreBin:
         self.findNo(noAux.esquerda,aux)
         self.findNo(noAux.direita,aux)
         return self.find
+    def mudaCor(self,canvas,no,vF):
+        if vF:
+            canvas.itemconfig(no.circulo,outline="blue")
+        else:
+            canvas.itemconfig(no.circulo,outline="black")
 
 class Menu(tk.LabelFrame):
     def __init__(self,master):
@@ -110,6 +121,8 @@ class CanvasTree(tk.Canvas):
                 self.menu.entrada.delete(0,"end")
                 no = No(valor,circ,text,x,y)
                 self.arvore.root = no
+                partialEmOrdem = partial(self.arvore.emOrdem,self.arvore.root,self)
+                self.menu.emOrdem.configure(command = partialEmOrdem)
             except:
                 messagebox.showerror("ERROR","Invalid input")
         else:
@@ -144,8 +157,6 @@ class CanvasTree(tk.Canvas):
                                     linha = Linha(self,findNoSel,no,"direita")
                                     no.linha = linha
                                     findNoSel.direita = no
-                                    self.arvore.emOrdem(self.arvore.root)
-                                    print()
                                 else:
                                     messagebox.showerror("ERROR","Right node already exist!")
                             else:
@@ -156,8 +167,6 @@ class CanvasTree(tk.Canvas):
                                     linha = Linha(self,findNoSel,no,"esquerda")
                                     no.linha = linha
                                     findNoSel.esquerda = no
-                                    self.arvore.emOrdem(self.arvore.root)
-                                    print()
                                 else:
                                     messagebox.showerror("ERROR","Left node already exist!")
                     except:
