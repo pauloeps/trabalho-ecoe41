@@ -145,6 +145,7 @@ class CanvasTree(tk.Canvas):
                                     no.linha = linha
                                     findNoSel.direita = no
                                     self.arvore.emOrdem(self.arvore.root)
+                                    print()
                                 else:
                                     messagebox.showerror("ERROR","Right node already exist!")
                             else:
@@ -156,6 +157,7 @@ class CanvasTree(tk.Canvas):
                                     no.linha = linha
                                     findNoSel.esquerda = no
                                     self.arvore.emOrdem(self.arvore.root)
+                                    print()
                                 else:
                                     messagebox.showerror("ERROR","Left node already exist!")
                     except:
@@ -180,7 +182,45 @@ class CanvasTree(tk.Canvas):
                         preNo.esquerda = None
             elif no.direita is None or no.esquerda is None:
                 if no is self.arvore.root:
-                    print()
+                    self.delete(no.circulo,no.texto)
+                    if no.direita:
+                        self.arvore.root = no.direita
+                        self.delete(no.direita.linha.linha)
+                        no.direita.linha=None
+                        no.direita = None
+                    else:
+                        self.arvore.root = no.esquerda
+                        self.delete(no.esquerda.linha.linha)
+                        no.esquerda.linha=None
+                        no.esquerda = None
+                else:
+                    preNo = no.linha.noInicio
+                    self.delete(no.circulo,no.texto,no.linha.linha)
+                    if preNo.direita is no:
+                        if no.direita:
+                            no.direita.linha.noInicio = preNo
+                            no.direita.linha.direct = "direita"
+                            preNo.direita = no.direita
+                            no.direita = None
+                        else:
+                            no.esquerda.linha.noInicio = preNo
+                            no.esquerda.linha.direct = "direita"
+                            preNo.direita = no.esquerda
+                            no.esquerda = None
+                    else:
+                        if no.direita:
+                            no.direita.linha.noInicio = preNo
+                            no.direita.linha.direct = "esquerda"
+                            preNo.esquerda = no.direita
+                            no.direita = None
+                        else:
+                            no.esquerda.linha.noInicio = preNo
+                            no.esquerda.linha.direct = "esquerda"
+                            preNo.esquerda = no.esquerda
+                            no.esquerda = None
+                        
+            else:
+                messagebox.showerror("ERROR","Can't remove a node with 2 children!")
         
 class FrameTree(tk.Frame):
     def __init__(self,master):
