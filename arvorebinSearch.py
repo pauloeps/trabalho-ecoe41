@@ -3,14 +3,13 @@ import math as m
 from functools import partial
 from tkinter import messagebox
 class No:
-    def __init__(self,val,circ,text,x,y,colocado=None):
+    def __init__(self,val,circ,text,x,y):
         self.valor = val
         self.circulo = circ
         self.texto = text
         self.direita = None
         self.esquerda = None
         self.linha = None
-        self.esqDir = colocado
         self.posicoes(x,y)
     def __str__(self):
         return "{0}".format(self.valor)
@@ -98,6 +97,32 @@ class ArvoreBin:
         self.findNo(noAux.esquerda,aux)
         self.findNo(noAux.direita,aux)
         return self.find
+    def insert(self,noAux,valorIn,x,y,canvas,resetNoIn):
+        if resetNoIn:
+            self.noIn = None
+        if noAux is None:
+            circ = canvas.create_oval(x-10,y-10,x+10,y+10,width = 2,fill="white")
+            text = canvas.create_text(x,y,text = valorIn)
+            self.noIn = No(valorIn,circ,text,x,y)
+            return self.noIn
+        if valorIn < noAux.valor:
+            noAux.esquerda = self.insert(noAux.esquerda,valorIn,x,y,canvas,False)
+            if(noAux.esquerda is self.noIn):
+                linha = Linha(canvas,noAux,noAux.esquerda,"esquerda")
+                noAux.esquerda.linha = linha
+        elif valorIn > noAux.valor:
+            noAux.direita = self.insert(noAux.direita,valorIn,x,y,canvas,False)
+            if(noAux.direita is self.noIn):
+                linha = Linha(canvas,noAux,noAux.direita,"direita")
+                noAux.direita.linha = linha
+        if noAux.valor == valorIn:
+             messagebox.showerror("ERROR","The value is already in the tree!")
+        return noAux
+    def insertNo(self,valorIn,x,y,canvas):
+        self.root = self.insert(self.root,valorIn,x,y,canvas,True)
+    def deletar(self,noAux,no,canvas):
+        if no.valor < noAux.valor:
+            noAux.left = self._del()
     def mudaCor(self,canvas,no,vF):
         if vF:
             canvas.itemconfig(no.circulo,outline="blue")
@@ -106,22 +131,28 @@ class ArvoreBin:
 
 class Menu(tk.LabelFrame):
     def __init__(self,master):
-        super().__init__(master,text = "Binary Tree Manager")
+        super().__init__(master,text = "Binary Search Tree Manager")
         self.lf = tk.LabelFrame(self,text = "Infos")
-        self.info = tk.Label(self.lf, text = "Left Button Mouse = Select Node\Insert Node\nRight Button Mouse = Remove Node\nIf Node is selected you can move by clicking on Canvas")
+        self.info = tk.Label(self.lf, text = "Left Button Mouse = Select Node\Insert Node\nRight Button Mouse = Remove Node\nIf Node is selected you can move by clicking on Canvas\n If root is selected you can insert")
         self.valno = tk.LabelFrame(self,text = "Node Value")
         self.caminhamento = tk.LabelFrame(self,text = "Walk")
-        self.entrada = tk.Entry(self.valno,width = 10,relief = "groove",justify = tk.RIGHT)
+        self.search = tk.LabelFrame(self,text = "Search Value")
+        self.entrada = tk.Entry(self.valno,width = 10,relief = "groove",justify = tk.CENTER)
+        self.searchEntry = tk.Entry(self.search,width = 10, relief = "groove", justify = tk.CENTER)
+        self.searchButton = tk.Button(self.search,text = "Search")
         self.emOrdem = tk.Button(self.caminhamento,text = "In Order")
         self.preOrdem = tk.Button(self.caminhamento,text = "Pre Order")
         self.posOrdem = tk.Button(self.caminhamento,text = "Pos Order")
         self.lf.grid(sticky = tk.N, row = 0, column = 0)
         self.valno.grid(sticky = tk.EW,row = 1,column = 0)
         self.caminhamento.grid(sticky = tk.EW,row = 2, column = 0)
+        self.search.grid(sticky = tk.EW, row = 3, column = 0)
         self.entrada.pack(fill=tk.BOTH)
         self.emOrdem.pack(fill=tk.BOTH)
         self.preOrdem.pack(fill=tk.BOTH)
         self.posOrdem.pack(fill=tk.BOTH)
+        self.searchEntry.pack(fill=tk.BOTH)
+        self.searchButton.pack(fill=tk.BOTH)
         self.info.pack()
 class CanvasTree(tk.Canvas):
     def __init__(self,master,tree,menu):
@@ -138,11 +169,8 @@ class CanvasTree(tk.Canvas):
         if(self.arvore.root is None):
             try:
                 valor = int(valor)
-                circ = self.create_oval(x-10,y-10,x+10,y+10,width = 2,fill="white")
-                text = self.create_text(x,y,text = valor)
                 self.menu.entrada.delete(0,"end")
-                no = No(valor,circ,text,x,y)
-                self.arvore.root = no
+                self.arvore.insertNo(valor,x,y,self)
                 partialEmOrdem = partial(self.arvore.emOrdem,self.arvore.root,self,True)
                 self.menu.emOrdem.configure(command = partialEmOrdem)
                 partialPreOrdem = partial(self.arvore.preOrdem,self.arvore.root,self,True)
@@ -169,32 +197,21 @@ class CanvasTree(tk.Canvas):
                         self.selecionado.posicoes(x,y)
                     else:
                         messagebox.showerror("ERROR","Can't draw over a node!")
-                else:
+                elif self.selecionado is self.arvore.root:
                     try:
                         valor = int(valor)
                         if(not item):
                             self.menu.entrada.delete(0,"end")
-                            findNoSel = self.arvore.findNo(self.arvore.root,self.selecionado.circulo)
-                            if(x > findNoSel.x):
-                                if(findNoSel.direita is None):
-                                    circ = self.create_oval(x-10,y-10,x+10,y+10,width = 2,fill="white")
-                                    text = self.create_text(x,y,text = valor)
-                                    no = No(valor,circ,text,x,y,"direita")
-                                    linha = Linha(self,findNoSel,no,"direita")
-                                    no.linha = linha
-                                    findNoSel.direita = no
-                                else:
-                                    messagebox.showerror("ERROR","Right node already exist!")
+                            if(x > self.arvore.root.x):
+                                if(valor > self.arvore.root.valor):
+                                    self.arvore.insertNo(valor,x,y,self)
+                                elif valor < self.arvore.root.valor:
+                                    messagebox.showerror("ERROR","The value is lower than root!")
                             else:
-                                if(findNoSel.esquerda is None):
-                                    circ = self.create_oval(x-10,y-10,x+10,y+10,width = 2,fill="white")
-                                    text = self.create_text(x,y,text = valor)
-                                    no = No(valor,circ,text,x,y,"esquerda")
-                                    linha = Linha(self,findNoSel,no,"esquerda")
-                                    no.linha = linha
-                                    findNoSel.esquerda = no
-                                else:
-                                    messagebox.showerror("ERROR","Left node already exist!")
+                                if(valor < self.arvore.root.valor):
+                                    self.arvore.insertNo(valor,x,y,self)
+                                elif valor > self.arvore.root.valor:
+                                    messagebox.showerror("ERROR","The value is bigger than root!")
                     except:
                         messagebox.showerror("ERROR","Invalid input")
                 self.selecionado = None
@@ -268,7 +285,7 @@ class FrameTree(tk.Frame):
 class Tela(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("BinaryTree")
+        self.title("BinarySearchTree")
         self.geometry("800x800")
         self.frmPilha = FrameTree(self)
         self.frmPilha.pack()
