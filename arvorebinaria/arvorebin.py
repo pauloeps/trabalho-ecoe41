@@ -45,30 +45,48 @@ class Linha:
 class ArvoreBin:
     def __init__(self):
         self.root = None
-    def emOrdem(self,noAux,canvas):
-        print("Cheguei")
+        self.time = 0
+    def emOrdem(self,noAux,canvas,resetTime):
+        if resetTime:
+            self.time = 0
+            print("Walk In Order!")
+        canvas.update()
         if noAux is None:
             return
-        if noAux.esquerda is None:
-            self.mudaCor(canvas,noAux,True)
-            canvas.after(2000,self.mudaCor,canvas,noAux,False)
-        canvas.after(2000,self.emOrdem,noAux.esquerda,canvas)
+        self.emOrdem(noAux.esquerda,canvas,False)
         print (noAux.valor, end = " ")
-        canvas.after(4000,self.emOrdem,noAux.direita,canvas)
+        canvas.after(self.time,self.mudaCor,canvas,noAux,True)
+        canvas.after(self.time+2000,self.mudaCor,canvas,noAux,False)
+        self.time += 2000
+        self.emOrdem(noAux.direita,canvas,False)
         
-    def preOrdem(self,noAux):
+    def preOrdem(self,noAux,canvas,resetTime):
+        if resetTime:
+            self.time = 0
+            print("Walk Pre Order!")
+        canvas.update()
         if noAux is None:
             return
         print (noAux.valor,end = " ")
-        self.preOrdem(noAux.esquerda)
-        self.preOrdem(noAux.direita)
+        canvas.after(self.time,self.mudaCor,canvas,noAux,True)
+        canvas.after(self.time+2000,self.mudaCor,canvas,noAux,False)
+        self.time += 2000
+        self.preOrdem(noAux.esquerda,canvas,False)
+        self.preOrdem(noAux.direita,canvas,False)
         
-    def posOrdem(self,noAux):
+    def posOrdem(self,noAux,canvas,resetTime):
+        if resetTime:
+            self.time = 0
+            print("Walk Pos Order!")
+        canvas.update()
         if noAux is None:
             return
-        self.posOrdem(noAux.esquerda)
-        self.posOrdem(noAux.direita)
+        self.posOrdem(noAux.esquerda,canvas,False)
+        self.posOrdem(noAux.direita,canvas,False)
         print (noAux.valor, end = " ")
+        canvas.after(self.time,self.mudaCor,canvas,noAux,True)
+        canvas.after(self.time+2000,self.mudaCor,canvas,noAux,False)
+        self.time += 2000
     def findNo(self,noAux,aux):
         if noAux is None:
             return
@@ -110,6 +128,7 @@ class CanvasTree(tk.Canvas):
         self.selecionado = None
         self.bind("<Button-1>",self.draw_No)
         self.bind("<Button-3>",self.removeNo)
+        self.update()
     def draw_No(self,event):
         x,y = event.x,event.y
         valor = self.menu.entrada.get()
@@ -121,8 +140,12 @@ class CanvasTree(tk.Canvas):
                 self.menu.entrada.delete(0,"end")
                 no = No(valor,circ,text,x,y)
                 self.arvore.root = no
-                partialEmOrdem = partial(self.arvore.emOrdem,self.arvore.root,self)
+                partialEmOrdem = partial(self.arvore.emOrdem,self.arvore.root,self,True)
                 self.menu.emOrdem.configure(command = partialEmOrdem)
+                partialPreOrdem = partial(self.arvore.preOrdem,self.arvore.root,self,True)
+                self.menu.preOrdem.configure(command = partialPreOrdem)
+                partialPosOrdem = partial(self.arvore.posOrdem,self.arvore.root,self,True)
+                self.menu.posOrdem.configure(command = partialPosOrdem)
             except:
                 messagebox.showerror("ERROR","Invalid input")
         else:
