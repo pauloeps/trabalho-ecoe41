@@ -2,6 +2,7 @@ import tkinter as tk
 import pilha
 import fila
 import arvorebin
+import arvorebinSearch
 
 class Application(tk.Tk):
     def __init__(self):
@@ -15,6 +16,7 @@ class Application(tk.Tk):
         self.frmPilha = pilha.FramePilha(self)       
         self.frmFila = fila.FrameFila(self)
         self.frmArvBin = arvorebin.FrameTree(self)
+        self.frmArvSrc = arvorebinSearch.FrameTree(self)
         
         #Menu
         self.menubar = tk.Menu(self)
@@ -22,6 +24,7 @@ class Application(tk.Tk):
         estruturamenu.add_command(label='Pilha', command=self.selPilha)
         estruturamenu.add_command(label='Fila', command=self.selFila)
         estruturamenu.add_command(label='Árvore Binária', command=self.selArvBin)
+        estruturamenu.add_command(label='Árvore Binária de Busca', command=self.selArvSrc)
         self.menubar.add_cascade(label="Estrutura", menu=estruturamenu)
         self.config(menu=self.menubar)
 
@@ -30,7 +33,7 @@ class Application(tk.Tk):
         self.frmPilha.pack_forget()
         self.frmFila.pack_forget()
         self.frmArvBin.pack_forget()
-        print('oi')
+        self.frmArvSrc.pack_forget()
     
     #Funcao ao selecionar Pilha
     def selPilha(self):
@@ -46,6 +49,11 @@ class Application(tk.Tk):
     def selArvBin(self):
         self.retirarFrames()
         self.frmArvBin.pack()
+
+    #Funcao ao selecionar Arvore Binaria de Busca
+    def selArvSrc(self):
+        self.retirarFrames()
+        self.frmArvSrc.pack()
 
 app=Application()
 app.mainloop()

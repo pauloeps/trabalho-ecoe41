@@ -284,13 +284,14 @@ class FrameTree(tk.Frame):
         self.menu.grid(sticky=tk.W,row = 0,column = 0)
         self.canvas = CanvasTree(self,self.arvore,self.menu)
         self.canvas.grid(sticky=tk.W,row=0,column=1)
-class Tela(tk.Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("BinarySearchTree")
-        self.geometry("800x800")
-        self.frmPilha = FrameTree(self)
-        self.frmPilha.pack()
+
+# class Tela(tk.Tk):
+#     def __init__(self):
+#         super().__init__()
+#         self.title("BinarySearchTree")
+#         self.geometry("800x800")
+#         self.frmPilha = FrameTree(self)
+#         self.frmPilha.pack()
             
-pilha=Tela()
-pilha.mainloop()
+# pilha=Tela()
+# pilha.mainloop()
