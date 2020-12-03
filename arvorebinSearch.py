@@ -41,7 +41,7 @@ class Linha:
                 self.canvas.coords(self.linha,self.noInicio.x2,self.noInicio.y2,self.noFim.x,self.noFim.y1)
             self.canvas.after(10,self.atualiza)
         
-class ArvoreBin:
+class ArvoreBinSearch:
     def __init__(self):
         self.root = None
         self.time = 0
@@ -127,7 +127,34 @@ class ArvoreBin:
             noAux.direita = self.deletar(noAux.direita,no,canvas)
         else:
             if noAux.esquerda is None:
-                canvas.delete()
+                canvas.delete(noAux.circulo,noAux.texto)
+                if noAux.linha:
+                    canvas.delete(noAux.linha.linha)
+                    if noAux.direita:
+                        noAux.direita.linha.noInicio = noAux.linha.noInicio
+                        noAux.direita.linha.direct = noAux.linha.direct
+                noAux = noAux.direita
+            elif noAux.direita is None:
+                canvas.delete(noAux.circulo,noAux.texto)
+                if noAux.linha:
+                    canvas.delete(noAux.linha.linha)
+                    if noAux.esquerda:
+                        noAux.esquerda.linha.noInicio = noAux.linha.noInicio
+                        noAux.esquerda.linha.direct = noAux.linha.direct
+                noAux = noAux.esquerda
+            else:
+                prox = noAux.direita
+                while prox.esquerda is not None:
+                    prox = prox.esquerda
+                noAux.valor = prox.valor
+                canvas.itemconfig(noAux.texto, text = canvas.itemcget(prox.texto,"text"))
+                noAux.direita = self.deletar(noAux.direita,noAux,canvas)
+        return noAux
+    def deletarNo(self,no,canvas):
+        self.root = self.deletar(self.root,no,canvas)
+        if self.root and self.root.linha:
+            canvas.delete(self.root.linha.linha)
+            self.root.linha = None
     def mudaCor(self,canvas,no,vF):
         if vF:
             canvas.itemconfig(no.circulo,outline="blue")
@@ -226,63 +253,12 @@ class CanvasTree(tk.Canvas):
         item = self.find_withtag(tk.CURRENT)
         if(item):
             no = self.arvore.findNo(self.arvore.root,item[0])
-            if no.direita is None and no.esquerda is None:
-                if no is self.arvore.root:
-                    self.delete(no.circulo,no.texto)
-                    self.arvore.root = None
-                else:
-                    preNo = no.linha.noInicio
-                    self.delete(no.circulo,no.texto,no.linha.linha)
-                    if(preNo.direita is no):
-                        preNo.direita = None
-                    else:
-                        preNo.esquerda = None
-            elif no.direita is None or no.esquerda is None:
-                if no is self.arvore.root:
-                    self.delete(no.circulo,no.texto)
-                    if no.direita:
-                        self.arvore.root = no.direita
-                        self.delete(no.direita.linha.linha)
-                        no.direita.linha=None
-                        no.direita = None
-                    else:
-                        self.arvore.root = no.esquerda
-                        self.delete(no.esquerda.linha.linha)
-                        no.esquerda.linha=None
-                        no.esquerda = None
-                else:
-                    preNo = no.linha.noInicio
-                    self.delete(no.circulo,no.texto,no.linha.linha)
-                    if preNo.direita is no:
-                        if no.direita:
-                            no.direita.linha.noInicio = preNo
-                            no.direita.linha.direct = "direita"
-                            preNo.direita = no.direita
-                            no.direita = None
-                        else:
-                            no.esquerda.linha.noInicio = preNo
-                            no.esquerda.linha.direct = "direita"
-                            preNo.direita = no.esquerda
-                            no.esquerda = None
-                    else:
-                        if no.direita:
-                            no.direita.linha.noInicio = preNo
-                            no.direita.linha.direct = "esquerda"
-                            preNo.esquerda = no.direita
-                            no.direita = None
-                        else:
-                            no.esquerda.linha.noInicio = preNo
-                            no.esquerda.linha.direct = "esquerda"
-                            preNo.esquerda = no.esquerda
-                            no.esquerda = None
-                        
-            else:
-                messagebox.showerror("ERROR","Can't remove a node with 2 children!")
+            self.arvore.deletarNo(no,self)
         
 class FrameTree(tk.Frame):
     def __init__(self,master):
         super().__init__(master)
-        self.arvore = ArvoreBin()
+        self.arvore = ArvoreBinSearch()
         self.menu = Menu(self)
         self.menu.grid(sticky=tk.W,row = 0,column = 0)
         self.canvas = CanvasTree(self,self.arvore,self.menu)
