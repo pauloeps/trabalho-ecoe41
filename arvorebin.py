@@ -113,7 +113,7 @@ class Menu(tk.LabelFrame):
                             is going to be the root, then click to insert
                             the child.
                             Right Button Mouse = Remove Node
-                            If Node Selected you can move with arrows. """
+                            If a node is selected you can move by clicking on canvas. """
         
         self.helpBtn = tk.Button(self.lf,text = "Help")
         self.valno = tk.LabelFrame(self,text = "Node Value")
@@ -140,7 +140,7 @@ class HelpWindow(tk.Tk):
         '\u2022 Left Button Mouse = Select Node\Insert Node',
         '\u2022 To insert a child, first click on the Node that is going to be the root, then click to insert the child.',
         '\u2022 Right Button Mouse = Remove Node',
-        '\u2022 If Node Selected you can move with arrows.']
+        '\u2022 If a node is selected you can move by clicking on canvas.']
         self.txt = tk.Text(self, 
                            height = 12,
                            width = 40,
