@@ -1,6 +1,7 @@
 import tkinter as tk
 import pilha
 import fila
+import arvorebin
 
 class Application(tk.Tk):
     def __init__(self):
@@ -13,12 +14,14 @@ class Application(tk.Tk):
         #Frames
         self.frmPilha = pilha.FramePilha(self)       
         self.frmFila = fila.FrameFila(self)
+        self.frmArvBin = arvorebin.FrameTree(self)
         
         #Menu
         self.menubar = tk.Menu(self)
         estruturamenu = tk.Menu(self.menubar)
         estruturamenu.add_command(label='Pilha', command=self.selPilha)
         estruturamenu.add_command(label='Fila', command=self.selFila)
+        estruturamenu.add_command(label='Árvore Binária', command=self.selArvBin)
         self.menubar.add_cascade(label="Estrutura", menu=estruturamenu)
         self.config(menu=self.menubar)
 
@@ -26,6 +29,8 @@ class Application(tk.Tk):
     def retirarFrames(self):
         self.frmPilha.pack_forget()
         self.frmFila.pack_forget()
+        self.frmArvBin.pack_forget()
+        print('oi')
     
     #Funcao ao selecionar Pilha
     def selPilha(self):
@@ -36,6 +41,11 @@ class Application(tk.Tk):
     def selFila(self):
         self.retirarFrames()
         self.frmFila.pack()
+
+    #Funcao ao selecionar Arvore Binaria
+    def selArvBin(self):
+        self.retirarFrames()
+        self.frmArvBin.pack()
 
 app=Application()
 app.mainloop()
