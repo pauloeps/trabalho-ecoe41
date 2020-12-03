@@ -55,8 +55,8 @@ class ArvoreBinSearch:
             return
         self.emOrdem(noAux.esquerda,canvas,False)
         print (noAux.valor, end = " ")
-        canvas.after(self.time,self.mudaCor,canvas,noAux,True)
-        canvas.after(self.time+1500,self.mudaCor,canvas,noAux,False)
+        canvas.after(self.time,self.mudaCor,canvas,noAux,"blue")
+        canvas.after(self.time+1500,self.mudaCor,canvas,noAux,"black")
         self.time += 1500
         self.emOrdem(noAux.direita,canvas,False)
         
@@ -69,8 +69,8 @@ class ArvoreBinSearch:
         if noAux is None:
             return
         print (noAux.valor,end = " ")
-        canvas.after(self.time,self.mudaCor,canvas,noAux,True)
-        canvas.after(self.time+1500,self.mudaCor,canvas,noAux,False)
+        canvas.after(self.time,self.mudaCor,canvas,noAux,"blue")
+        canvas.after(self.time+1500,self.mudaCor,canvas,noAux,"black")
         self.time += 1500
         self.preOrdem(noAux.esquerda,canvas,False)
         self.preOrdem(noAux.direita,canvas,False)
@@ -86,8 +86,8 @@ class ArvoreBinSearch:
         self.posOrdem(noAux.esquerda,canvas,False)
         self.posOrdem(noAux.direita,canvas,False)
         print (noAux.valor, end = " ")
-        canvas.after(self.time,self.mudaCor,canvas,noAux,True)
-        canvas.after(self.time+1500,self.mudaCor,canvas,noAux,False)
+        canvas.after(self.time,self.mudaCor,canvas,noAux,"blue")
+        canvas.after(self.time+1500,self.mudaCor,canvas,noAux,"black")
         self.time += 1500
     def findNo(self,noAux,aux):
         if noAux is None:
@@ -155,11 +155,30 @@ class ArvoreBinSearch:
         if self.root and self.root.linha:
             canvas.delete(self.root.linha.linha)
             self.root.linha = None
-    def mudaCor(self,canvas,no,vF):
-        if vF:
-            canvas.itemconfig(no.circulo,outline="blue")
-        else:
-            canvas.itemconfig(no.circulo,outline="black")
+    def search(self,noAux,valor,canvas,resetTime):
+        try:
+            if resetTime:
+                self.time = 0
+                aux = valor
+                valor = int(valor.get())
+                aux.delete(0,"end")
+                print("\nSearching...")
+            if noAux is None:
+                messagebox.showerror("ERROR","The value doesn't exist!")
+                return
+            canvas.after(self.time,self.mudaCor,canvas,noAux,"blue")
+            self.time += 1500
+            if valor > noAux.valor:
+                self.search(noAux.direita,valor,canvas,False)
+            elif valor < noAux.valor:
+                self.search(noAux.esquerda,valor,canvas,False)
+            else:
+                canvas.after(self.time,self.mudaCor,canvas,noAux,"yellow")
+            canvas.after(self.time+1500,self.mudaCor,canvas,noAux,"black")
+        except:
+            messagebox.showerror("ERROR","Invalid input")
+    def mudaCor(self,canvas,no,cor):
+        canvas.itemconfig(no.circulo,outline=cor)
 
 class Menu(tk.LabelFrame):
     def __init__(self,master):
@@ -209,6 +228,8 @@ class CanvasTree(tk.Canvas):
                 self.menu.preOrdem.configure(command = partialPreOrdem)
                 partialPosOrdem = partial(self.arvore.posOrdem,self.arvore.root,self,True)
                 self.menu.posOrdem.configure(command = partialPosOrdem)
+                partialSearch = partial(self.arvore.search,self.arvore.root,self.menu.searchEntry,self,True)
+                self.menu.searchButton.configure(command = partialSearch)
             except:
                 messagebox.showerror("ERROR","Invalid input")
         else:
