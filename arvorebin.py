@@ -114,7 +114,7 @@ class Menu(tk.LabelFrame):
                             the child.
                             Right Button Mouse = Remove Node
                             If Node Selected you can move with arrows. """
-        #self.info = tk.Label(self.lf, text = self.infoText)
+        
         self.helpBtn = tk.Button(self.lf,text = "Help")
         self.valno = tk.LabelFrame(self,text = "Node Value")
         self.caminhamento = tk.LabelFrame(self,text = "Walk")
@@ -122,20 +122,19 @@ class Menu(tk.LabelFrame):
         self.emOrdem = tk.Button(self.caminhamento,text = "In Order")
         self.preOrdem = tk.Button(self.caminhamento,text = "Pre Order")
         self.posOrdem = tk.Button(self.caminhamento,text = "Pos Order")
-        self.lf.grid(sticky = tk.N, row = 0, column = 0)
-        self.valno.grid(sticky = tk.EW,row = 1,column = 0)
-        self.caminhamento.grid(sticky = tk.EW,row = 2, column = 0)
+        self.lf.pack()
+        self.valno.pack()
+        self.caminhamento.pack()
         self.entrada.pack(fill=tk.BOTH)
         self.emOrdem.pack(fill=tk.BOTH)
         self.preOrdem.pack(fill=tk.BOTH)
         self.posOrdem.pack(fill=tk.BOTH)
         self.helpBtn.pack()
-        #self.info.pack()
 
 class HelpWindow(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Help")
+        self.title("Arvore Binária - Ajuda")
         #self.geometry("400x600")
         self.bullets = [
         '\u2022 Left Button Mouse = Select Node\Insert Node',
@@ -157,7 +156,7 @@ class HelpWindow(tk.Tk):
 
 class CanvasTree(tk.Canvas):
     def __init__(self,master,tree,menu):
-        super().__init__(master, bg = "white", width = 600, height = 700)
+        super().__init__(master, bg = "white", width = 660, height = 780)
         self.menu = menu
         self.arvore = tree
         self.selecionado = None
@@ -300,16 +299,17 @@ class FrameTree(tk.Frame):
         super().__init__(master)
         self.arvore = ArvoreBin()
         self.menu = Menu(self)
-        self.menu.grid(sticky=tk.W,row = 0,column = 0)
         self.canvas = CanvasTree(self,self.arvore,self.menu)
-        self.canvas.grid(sticky=tk.W,row=0,column=1)
-class Tela(tk.Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("BinaryTree")
-        self.geometry("800x800")
-        self.frmPilha = FrameTree(self)
-        self.frmPilha.pack()
+        self.menu.pack(side='left')
+        self.canvas.pack(side='right')
+        
+# class Tela(tk.Tk):
+#     def __init__(self):
+#         super().__init__()
+#         self.title("BinaryTree")
+#         self.geometry("800x800")
+#         self.frmPilha = FrameTree(self)
+#         self.frmPilha.pack()
             
-pilha=Tela()
-pilha.mainloop()
+# pilha=Tela()
+# pilha.mainloop()
