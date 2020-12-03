@@ -173,7 +173,7 @@ class ArvoreBinSearch:
             elif valor < noAux.valor:
                 self.search(noAux.esquerda,valor,canvas,False)
             else:
-                canvas.after(self.time,self.mudaCor,canvas,noAux,"yellow")
+                canvas.after(self.time,self.mudaCor,canvas,noAux,"goldenrod")
             canvas.after(self.time+1500,self.mudaCor,canvas,noAux,"black")
         except:
             messagebox.showerror("ERROR","Invalid input")
