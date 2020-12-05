@@ -183,8 +183,8 @@ class ArvoreBinSearch:
 class Menu(tk.LabelFrame):
     def __init__(self,master):
         super().__init__(master,text = "Binary Search Tree Manager")
-        self.lf = tk.LabelFrame(self,text = "Infos")
-        self.info = tk.Label(self.lf, text = "Left Button Mouse = Select Node\Insert Node\nRight Button Mouse = Remove Node\nIf Node is selected you can move by clicking on Canvas\n If root is selected you can insert")
+        self.lf = tk.LabelFrame(self,text = "Info")       
+        self.helpBtn = tk.Button(self.lf,text = "Help")
         self.valno = tk.LabelFrame(self,text = "Node Value")
         self.caminhamento = tk.LabelFrame(self,text = "Walk")
         self.search = tk.LabelFrame(self,text = "Search Value")
@@ -194,26 +194,60 @@ class Menu(tk.LabelFrame):
         self.emOrdem = tk.Button(self.caminhamento,text = "In Order")
         self.preOrdem = tk.Button(self.caminhamento,text = "Pre Order")
         self.posOrdem = tk.Button(self.caminhamento,text = "Pos Order")
-        self.lf.grid(sticky = tk.N, row = 0, column = 0)
-        self.valno.grid(sticky = tk.EW,row = 1,column = 0)
-        self.caminhamento.grid(sticky = tk.EW,row = 2, column = 0)
-        self.search.grid(sticky = tk.EW, row = 3, column = 0)
+        # self.lf.grid(sticky = tk.N, row = 0, column = 0)
+        # self.valno.grid(sticky = tk.EW,row = 1,column = 0)
+        # self.caminhamento.grid(sticky = tk.EW,row = 2, column = 0)
+        # self.search.grid(sticky = tk.EW, row = 3, column = 0)
+        self.lf.pack()
+        self.valno.pack()
+        self.caminhamento.pack()
+        self.search.pack()
         self.entrada.pack(fill=tk.BOTH)
         self.emOrdem.pack(fill=tk.BOTH)
         self.preOrdem.pack(fill=tk.BOTH)
         self.posOrdem.pack(fill=tk.BOTH)
         self.searchEntry.pack(fill=tk.BOTH)
         self.searchButton.pack(fill=tk.BOTH)
-        self.info.pack()
+        self.helpBtn.pack()
+
+class HelpWindow(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Arvore Binária de Busca - Ajuda")
+        #self.geometry("400x600")
+        self.bullets = [
+        '\u2022 Left Button Mouse = Select Node/Insert Node',
+        '\u2022 To insert a child, first click on the root, then click to insert the child.',
+        '\u2022 Right Button Mouse = Remove Node',
+        '\u2022 If a node is selected you can move by clicking on Canvas.',
+        '\u2022 If root is selected you can insert.']
+        self.txt = tk.Text(self, 
+                           height = 12,
+                           width = 60,
+                           wrap='word',
+                           font=("Times New Roman", 12))
+        
+        for bullet in self.bullets:
+            self.txt.insert('end', bullet)
+            self.txt.insert('end', '\n\n')
+        self.txt.config(state='disabled')
+        self.txt.pack()
+
 class CanvasTree(tk.Canvas):
     def __init__(self,master,tree,menu):
-        super().__init__(master, bg = "white", width = 600, height = 700)
+        super().__init__(master, bg = "white", width = 630, height = 780)
         self.menu = menu
         self.arvore = tree
         self.selecionado = None
         self.bind("<Button-1>",self.draw_No)
         self.bind("<Button-3>",self.removeNo)
+        self.menu.helpBtn.configure(command = self.helpCmd)
         self.update()
+
+    def helpCmd(self):
+        hlpW = HelpWindow()
+        hlpW.mainloop()
+
     def draw_No(self,event):
         x,y = event.x,event.y
         valor = self.menu.entrada.get()
