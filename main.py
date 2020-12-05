@@ -64,6 +64,7 @@ class Application(tk.Tk):
         janelaSobre.geometry("500x250")
         janelaSobre.title("Sobre este trabalho")
         strSobre = ('Trabalho da disciplina ECOE41 - Tópicos Especiais em Programação Teórica\n'
+        'Professores Edmilson Marmo Moreira e Edvard Martins de Oliveira\n'
         'Universidade Federal de Itajubá\n'
         '\nEste trabalho teve como propósito criar uma visualização\n'
         'de estruturas de dados, para permitir que uma pessoa que\n'
