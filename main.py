@@ -20,8 +20,8 @@ class Application(tk.Tk):
         
         #Menu
         self.menubar = tk.Menu(self)
-        estruturamenu = tk.Menu(self.menubar)
-        ajudamenu = tk.Menu(self.menubar)
+        estruturamenu = tk.Menu(self.menubar, tearoff=False)
+        ajudamenu = tk.Menu(self.menubar, tearoff=False)
         estruturamenu.add_command(label='Pilha', command=self.selPilha)
         estruturamenu.add_command(label='Fila', command=self.selFila)
         estruturamenu.add_command(label='Árvore Binária', command=self.selArvBin)
