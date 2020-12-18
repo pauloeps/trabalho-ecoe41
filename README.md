@@ -9,7 +9,6 @@ Trabalho da disciplina Tópicos Especiais em Programação Teórica - ECOE41, do
 * Paulo Eduardo Paes Salomon
 * Gabriel Orlando Campista Petrucci
 * Jean Tan Li
-* Gabriel Ferreira Sousa Nilo
 
 ## Descrição do Trabalho
 ([Descrição mais detalhada](docs-uteis/descricao-trabalho.pdf))
