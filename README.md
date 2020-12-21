@@ -6,6 +6,8 @@ Foi criado um programa em Python utilizando a biblioteca Tkinter que proporciona
 
 Para rodar basta executar o script `main.py`.
 
+[Vídeo de Apresentação do Trabalho](https://youtu.be/8pxqRDdTAI4)
+
 ## Screenshots
 
 <img src="img/menu-escolha-estrutura.png" width="207">
