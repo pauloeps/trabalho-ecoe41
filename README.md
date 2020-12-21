@@ -10,11 +10,11 @@ Para rodar basta executar o script `main.py`.
 
 <img src="img/menu-escolha-estrutura.png" width="207">
 
-<img src="img/stack-push.png" width="400">
+<img src="img/stack-push.png" width="401">
 
-<img src="img/stack-pop.png" width="400">
+<img src="img/stack-pop.png" width="401">
 
-<img src="img/arvore.png" width="400">
+<img src="img/arvore.png" width="401">
 
 ## Tutorial Git/GitHub
 * Para quem gosta de ler: [Tutorial Breve em PDF (5 páginas)](git-github.pdf)
