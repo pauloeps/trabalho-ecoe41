@@ -8,13 +8,13 @@ Para rodar basta executar o script `main.py`.
 
 ## Screenshots
 
-<img src="img/menu-escolha-estrutura.jpg" width="207">
+<img src="img/menu-escolha-estrutura.png" width="207">
 
-<img src="img/stack-push.jpg" width="400">
+<img src="img/stack-push.png" width="400">
 
-<img src="img/stack-pop.jpg" width="400">
+<img src="img/stack-pop.png" width="400">
 
-<img src="img/arvore.jpg" width="400">
+<img src="img/arvore.png" width="400">
 
 ## Tutorial Git/GitHub
 * Para quem gosta de ler: [Tutorial Breve em PDF (5 páginas)](git-github.pdf)
