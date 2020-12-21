@@ -2,6 +2,7 @@ import tkinter as tk
 import math as m
 from functools import partial
 from tkinter import messagebox
+
 class No:
     def __init__(self,val,circ,text,x,y,colocado=None):
         self.valor = val
@@ -12,8 +13,10 @@ class No:
         self.linha = None
         self.esqDir = colocado
         self.posicoes(x,y)
+
     def __str__(self):
         return "{0}".format(self.valor)
+
     def posicoes(self,x,y):
         aux = m.sin(m.radians(45))*10
         self.x = x
@@ -34,6 +37,7 @@ class Linha:
         else:
             self.linha = canvas.create_line(self.noInicio.x2,self.noInicio.y2,self.noFim.x,self.noFim.y1,fill="black")
         self.atualiza()
+
     def atualiza(self):
         if self.linha:
             if(self.direct == "esquerda"):
@@ -46,6 +50,7 @@ class ArvoreBin:
     def __init__(self):
         self.root = None
         self.time = 0
+
     def emOrdem(self,noAux,canvas,resetTime):
         if resetTime:
             self.time = 0
@@ -90,6 +95,7 @@ class ArvoreBin:
         canvas.after(self.time,self.mudaCor,canvas,noAux,True)
         canvas.after(self.time+1500,self.mudaCor,canvas,noAux,False)
         self.time += 1500
+
     def findNo(self,noAux,aux):
         if noAux is None:
             return
@@ -98,6 +104,7 @@ class ArvoreBin:
         self.findNo(noAux.esquerda,aux)
         self.findNo(noAux.direita,aux)
         return self.find
+
     def mudaCor(self,canvas,no,vF):
         if vF:
             canvas.itemconfig(no.circulo,outline="blue")
@@ -145,7 +152,6 @@ class HelpWindow(tk.Tk):
             self.txt.insert('end', '\n\n')
         self.txt.config(state='disabled')
         self.txt.pack()
-
 
 class CanvasTree(tk.Canvas):
     def __init__(self,master,tree,menu):

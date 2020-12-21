@@ -2,6 +2,7 @@ import tkinter as tk
 import math as m
 from functools import partial
 from tkinter import messagebox
+
 class No:
     def __init__(self,val,circ,text,x,y):
         self.valor = val
@@ -11,8 +12,10 @@ class No:
         self.esquerda = None
         self.linha = None
         self.posicoes(x,y)
+
     def __str__(self):
         return "{0}".format(self.valor)
+
     def posicoes(self,x,y):
         aux = m.sin(m.radians(45))*10
         self.x = x
@@ -33,6 +36,7 @@ class Linha:
         else:
             self.linha = canvas.create_line(self.noInicio.x2,self.noInicio.y2,self.noFim.x,self.noFim.y1,fill="black")
         self.atualiza()
+
     def atualiza(self):
         if self.linha:
             if(self.direct == "esquerda"):
@@ -45,6 +49,7 @@ class ArvoreBinSearch:
     def __init__(self):
         self.root = None
         self.time = 0
+
     def emOrdem(self,noAux,canvas,resetTime):
         if resetTime:
             self.time = 0
@@ -89,6 +94,7 @@ class ArvoreBinSearch:
         canvas.after(self.time,self.mudaCor,canvas,noAux,"blue")
         canvas.after(self.time+1500,self.mudaCor,canvas,noAux,"black")
         self.time += 1500
+
     def findNo(self,noAux,aux):
         if noAux is None:
             return
@@ -97,6 +103,7 @@ class ArvoreBinSearch:
         self.findNo(noAux.esquerda,aux)
         self.findNo(noAux.direita,aux)
         return self.find
+
     def insert(self,noAux,valorIn,x,y,canvas,resetNoIn):
         if resetNoIn:
             self.noIn = None
@@ -118,8 +125,10 @@ class ArvoreBinSearch:
         if noAux.valor == valorIn:
              messagebox.showerror("ERROR","The value is already in the tree!")
         return noAux
+
     def insertNo(self,valorIn,x,y,canvas):
         self.root = self.insert(self.root,valorIn,x,y,canvas,True)
+    
     def deletar(self,noAux,no,canvas):
         if no.valor < noAux.valor:
             noAux.esquerda = self.deletar(noAux.esquerda,no,canvas)
@@ -150,11 +159,13 @@ class ArvoreBinSearch:
                 canvas.itemconfig(noAux.texto, text = canvas.itemcget(prox.texto,"text"))
                 noAux.direita = self.deletar(noAux.direita,noAux,canvas)
         return noAux
+    
     def deletarNo(self,no,canvas):
         self.root = self.deletar(self.root,no,canvas)
         if self.root and self.root.linha:
             canvas.delete(self.root.linha.linha)
             self.root.linha = None
+    
     def search(self,noAux,valor,canvas,resetTime):
         try:
             if resetTime:
@@ -177,6 +188,7 @@ class ArvoreBinSearch:
             canvas.after(self.time+1500,self.mudaCor,canvas,noAux,"black")
         except:
             messagebox.showerror("ERROR","Invalid input")
+    
     def mudaCor(self,canvas,no,cor):
         canvas.itemconfig(no.circulo,outline=cor)
 
@@ -194,10 +206,6 @@ class Menu(tk.LabelFrame):
         self.emOrdem = tk.Button(self.caminhamento,text = "In Order")
         self.preOrdem = tk.Button(self.caminhamento,text = "Pre Order")
         self.posOrdem = tk.Button(self.caminhamento,text = "Pos Order")
-        # self.lf.grid(sticky = tk.N, row = 0, column = 0)
-        # self.valno.grid(sticky = tk.EW,row = 1,column = 0)
-        # self.caminhamento.grid(sticky = tk.EW,row = 2, column = 0)
-        # self.search.grid(sticky = tk.EW, row = 3, column = 0)
         self.lf.pack()
         self.valno.pack()
         self.caminhamento.pack()

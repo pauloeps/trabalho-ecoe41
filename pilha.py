@@ -1,7 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
-#variável para controlar o tamanho do bloco da pilha
+
+#Variavel para controlar o tamanho do bloco da pilha
 l = 20
+
 #Classe que desenha o bloco da pilha
 class Draw_Rect:
     def __init__(self,canvas,y,value,larg,alt):
@@ -13,11 +15,13 @@ class Draw_Rect:
         self.value = value   
         self.rect_draw = self.canvas.create_rectangle(larg-l,self.start,larg+l,self.end,outline = "blue",tag = 'elem')
         self.rect_text = self.canvas.create_text((larg,self.text_pos),text = value,font=("Courier", 18),tag = 'elem')
+    
     def delete_rect(self):
         self.canvas.delete(self.rect_draw,self.rect_text)
-    def appear(self,_start,speed,isPop = False): #Animação de subida na Pilha
+    
+    def appear(self,_start,speed,isPop = False): #Animacao de subida na Pilha
         self.canvas.update()
-        if (self.start <= _start) or isPop: #_start e _end são as posições que já sabemos onde os blocos ficarão
+        if (self.start <= _start) or isPop: #_start e _end são as posicoes que ja sabemos onde os blocos ficarao
             if not isPop:
                 aux = 1
             else:
@@ -27,7 +31,8 @@ class Draw_Rect:
             self.canvas.move(self.rect_draw, 0 , (aux*speed))
             self.canvas.move(self.rect_text, 0 , (aux*speed))
             temp = self.canvas.after(10,self.appear, _start, speed,isPop)
-        elif (self.start > _start): #caso ocorra de passar a posição definida
+        
+        elif (self.start > _start): #caso ocorra de passar a posicao definida
             speed = self.start - _start
             self.start -= speed
             #self.end += speed
@@ -86,12 +91,15 @@ class Options(tk.LabelFrame):
         self.opt_text.grid(sticky = tk.N,row = 5, column = 0)
         self.opt_text.bind("<Return>",self.do_action)
         self.lista = list()
+    
     def show_top(self):
         if not self.stack.isEmpty():
             self.canvas.itemconfig(self.stack.peek().rect_draw, outline = "red")
+    
     def hide_top(self):
         if not self.stack.isEmpty():
             self.canvas.itemconfig(self.stack.peek().rect_draw, outline = "blue")
+    
     def paint(self,*args):
         if self.option.get() == "Pop":
             self.canvas.itemconfig(self.canvas.info, text = "Remove Top\nSize:%d"%self.stack.size())
@@ -102,6 +110,7 @@ class Options(tk.LabelFrame):
         elif self.option.get() == "Push":
             self.canvas.itemconfig(self.canvas.info, text = "Inserting items\nSize:%d"%self.stack.size())
             self.hide_top()
+    
     def do_action(self,event):
         op = self.get_opt()
         print("Operação : ",op)
@@ -128,11 +137,14 @@ class Options(tk.LabelFrame):
             except:
                 messagebox.showerror("ERROR","Cannot remove from empty stack")
         self.opt_text.delete(0,"end")
+    
     def get_opt(self):
         return self.option.get()
+    
     def get_value(self):
         aux = self.opt_text.get().split(",")
         return [int(i) for i in aux]
+    
     def create_box(self):
         if (self.y+40) < (self.alt) and len(self.lista) > 0:
             yi_pos = self.alt-10-2*l+self.y

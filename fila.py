@@ -1,7 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
-#variável para controlar o tamanho do bloco da fila
+
+#Variavel para controlar o tamanho do bloco da fila
 l = 20
+
 #Classe que desenha o bloco da fila
 class Draw_Rect:
     def __init__(self,canvas,y,value,larg,alt):
@@ -16,11 +18,13 @@ class Draw_Rect:
         #self.height = 2*l 
         self.rect_draw = self.canvas.create_rectangle(larg-l,self.start,larg+l,self.end,outline = "blue",tag = 'elem')
         self.rect_text = self.canvas.create_text((larg,self.text_pos),text = value,font=("Courier", 18),tag = 'elem')
+
     def delete_rect(self):
         self.canvas.delete(self.rect_draw,self.rect_text)
-    def appear(self,_start,speed): #Animação de subida na fila
+
+    def appear(self,_start,speed): #Animacao de subida na fila
         self.canvas.update()
-        if (self.start >= _start): #_start e _end são as posições que já sabemos onde os blocos ficarão
+        if (self.start >= _start): #_start e _end sao as posicoes que ja sabemos onde os blocos ficarao
             #self.canvas.update()
             self.start -= speed
             #self.end -= speed
@@ -88,13 +92,15 @@ class Options(tk.LabelFrame):
         self.opt_text.bind("<Return>",self.do_action)
         self.lista = list()
         
-    def show_front(self):   #Destaca qual elemento será retirado da pilha (função dequeue)
+    def show_front(self):   #Destaca qual elemento sera retirado da pilha (funcao dequeue)
         if not self.queue.isEmpty():
             self.canvas.itemconfig(self.queue.front().rect_draw, outline = "red")
+
     def hide_front(self):   
         if not self.queue.isEmpty():
             self.canvas.itemconfig(self.queue.front().rect_draw, outline = "blue")
-    def paint(self,*args):  #Atualiza as variáveis de controle dos RadioButtons e exibe mensagens de ação na tela
+
+    def paint(self,*args):  #Atualiza as variaveis de controle dos RadioButtons e exibe mensagens de acao na tela
         if self.option.get() == "Dequeue":
             self.canvas.itemconfig(self.canvas.info, text = "Remove front\nSize:%d"%self.queue.size())
             self.show_front()
@@ -104,7 +110,8 @@ class Options(tk.LabelFrame):
         elif self.option.get() == "Enqueue":
             self.canvas.itemconfig(self.canvas.info, text = "Inserting items\nSize:%d"%self.queue.size())
             self.hide_front()
-    def do_action(self,event):  #Função que realiza as ações do programa (nova fila, enfileirar,desenfileirar)
+
+    def do_action(self,event):  #Funcao que realiza as acoes do programa (nova fila, enfileirar, desenfileirar)
         op = self.get_opt()
         print("Operação : ",op)
         if op == "New Queue":
@@ -119,7 +126,7 @@ class Options(tk.LabelFrame):
                     self.lista += self.get_value()
                 self.create_box()
             #except:
-             #   messagebox.showerror("ERROR","Invalid input")
+            #   messagebox.showerror("ERROR","Invalid input")
         elif op == "Dequeue":
             try:
                 print("Tamanho da fila: ",self.queue.size())
@@ -132,6 +139,7 @@ class Options(tk.LabelFrame):
             except:
                messagebox.showerror("ERROR","Cannot remove from empty queue")
         self.opt_text.delete(0,"end")
+    
     def create_box(self):
         if (self.y+40) < (self.alt) and len(self.lista) > 0:
             yi_pos = 10+self.y
@@ -149,6 +157,7 @@ class Options(tk.LabelFrame):
                
     def get_opt(self):
         return self.option.get()
+    
     def get_value(self):
         aux = self.opt_text.get().split(",")
         return [int(i) for i in aux]
